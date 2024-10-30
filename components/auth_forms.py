@@ -1,31 +1,30 @@
 import streamlit as st
+from utils.validation import is_valid_email
 
-def render_signup():
+def render_signup_form():
+    registration_data={}
     st.subheader("Create a New Account")
-    email = st.text_input("Email", key="signup_email")
-    password = st.text_input("Password", type="password", key="signup_password")
-    confirm_password = st.text_input("Confirm Password", type="password", key="signup_confirm_password")
+    registration_data['email'] = st.text_input("Email", key="signup_email")
+    registration_data['password'] = st.text_input("Password", type="password", key="signup_password")
+    registration_data['confirm_password'] = st.text_input("Confirm Password", type="password", key="signup_confirm_password")
 
     if st.button("Sign Up"):
-        pass
-        # if username in user_data:
-        #     st.error("Username already exists. Please choose a different one.")
-        # elif password != confirm_password:
-        #     st.error("Passwords do not match.")
-        # else:
-        #     user_data[username] = password
-        #     st.success("Account created successfully! Please log in.")
-        #     st.session_state["authenticated"] = False
+        if not is_valid_email(registration_data['email']):
+            st.error("Email address is not valid")
+        elif registration_data['password'] != registration_data['confirm_password']:
+            st.error("Passwords do not match.")
+        else:
+            return registration_data
 
-def render_login():
+
+def render_login_form():
+    login_data={}
     st.subheader("Login to Your Account")
-    email = st.text_input("Email", key="login_email")
-    password = st.text_input("Password", type="password", key="login_password")
+    login_data['email'] = st.text_input("Email", key="login_email")
+    login_data['password'] = st.text_input("Password", type="password", key="login_password")
 
     if st.button("Login"):
-        pass
-        # if username in user_data and user_data[username] == password:
-        #     st.session_state["authenticated"] = True
-        #     st.success("Logged in successfully!")
-        # else:
-        #     st.error("Invalid username or password.")
+        if not is_valid_email(login_data['email']):
+            st.error("Email address is not valid")
+        else:
+            return login_data

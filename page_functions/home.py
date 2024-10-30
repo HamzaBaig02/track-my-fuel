@@ -5,8 +5,21 @@ from utils.auth import protected
 
 
 @protected()
-def render_home():
+def render_home(user=None):
     # Predefined Locations
+    email = user.user_metadata['email']
+    st.markdown(
+    f"""
+    <div style='text-align: center; margin-top: 50px;'>
+        <h2>Hi 👋</h2>
+        <p style='font-size: 20px; color: #4A90E2;'>
+            {email}
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
     locations = {
         "Total": ["FC College", "Barkat Market", "Central Park", "Jinnah Hospital"],
         "GO": ["Pekhewal Morr", "Gajjumatta"],
