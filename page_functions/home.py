@@ -1,9 +1,11 @@
 import streamlit as st
 from components.field_label import render_field_label
 from datetime import datetime
+from utils.auth import protected
 
 
-def home_page():
+@protected()
+def render_home():
     # Predefined Locations
     locations = {
         "Total": ["FC College", "Barkat Market", "Central Park", "Jinnah Hospital"],
@@ -85,3 +87,6 @@ def home_page():
 
     # Display the dictionary (optional for debugging or confirmation)
     st.write("Fuel Data:", fuel_data)
+
+
+render_home()
