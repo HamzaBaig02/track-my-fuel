@@ -1,2 +1,2 @@
-streamlit>=1.39.0,<1.33
-supabase>=2.9.1,<2.9.9
+streamlit=1.39.0
+supabase=2.9.1
