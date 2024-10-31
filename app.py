@@ -1,13 +1,14 @@
 import streamlit as st
-from utils.auth import supabase
+from supabase import create_client, Client
 
-#setting user in session
-# try:
-#     response = supabase.auth.get_user()
-#     st.session_state['user'] = response.user
-# except Exception as e:
-#     print(str(e))
+class SupabaseEngine:
+    url = st.secrets['supabase']['url']
+    key = st.secrets['supabase']['key']
+    def __init__(self):
+        self.supabase: Client = create_client(self.url,self.key)
 
+if "supabase" not in st.session_state:
+     st.session_state['supabase'] = SupabaseEngine().supabase
 
 pg = st.navigation([
     st.Page("page_functions/home.py", title="Home", icon="🏠"),
