@@ -110,22 +110,10 @@ def render_home(user=None):
     )
 
     # Fuel Addition Mileage
-    render_field_label(text="🔢 Fuel Addition Mileage")
+    render_field_label(text="📊 Fuel Addition Mileage")
     fuel_data["fuel_addition_mileage"] = clean_number_input(
         st.number_input(
             "Enter mileage when fuel was added (km per liter)",
-            min_value=0.0,
-            step=0.1,
-            format="%.2f",
-            label_visibility="collapsed",
-        )
-    )
-
-    # Fuel Mileage
-    render_field_label(text="📊 Fuel Mileage")
-    fuel_data["fuel_mileage"] = clean_number_input(
-        st.number_input(
-            "Enter fuel mileage (km per liter)",
             min_value=0.0,
             step=0.1,
             format="%.2f",
