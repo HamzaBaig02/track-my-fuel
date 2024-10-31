@@ -20,6 +20,8 @@ def render_login_signup():
                 response = st.session_state['supabase'].auth.sign_up(
                     {"email": registration_data["email"], "password": registration_data["password"]}
                 )
+                if response:
+                    st.success("Verification email sent!")
             except Exception as e:
                 st.error(str(e))
 
