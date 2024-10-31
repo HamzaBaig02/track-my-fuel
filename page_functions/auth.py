@@ -27,7 +27,7 @@ def render_login_signup():
         login_data = render_login_form()
         if login_data:
             try:
-                response = st.session_state['supabase'].sign_in_with_password(
+                response = st.session_state['supabase'].auth.sign_in_with_password(
                     {"email": login_data["email"], "password": login_data["password"]}
                 )
                 if not response.user:
