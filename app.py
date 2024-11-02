@@ -1,13 +1,14 @@
 import streamlit as st
 from utils.api import SupabaseEngine
 from utils.cookies import get_cookie_manager
-
+import time
 
 def init_session_state():
     if "supabase" not in st.session_state:
         cookie_manager = get_cookie_manager()
         access_token = cookie_manager.get(cookie="access_token")
         refresh_token = cookie_manager.get(cookie="refresh_token")
+        time.sleep(2)
         if access_token and refresh_token:
             supabase = SupabaseEngine().supabase
             supabase.auth.set_session(access_token, refresh_token)
