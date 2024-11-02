@@ -6,8 +6,8 @@ import time
 def init_session_state():
     if "supabase" not in st.session_state:
         cookie_manager = get_cookie_manager()
-        access_token = cookie_manager.get(cookie="access_token")
-        refresh_token = cookie_manager.get(cookie="refresh_token")
+        access_token = cookie_manager.get("access_token")
+        refresh_token = cookie_manager.get("refresh_token")
         time.sleep(2)
         if access_token and refresh_token:
             supabase = SupabaseEngine().supabase

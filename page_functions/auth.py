@@ -38,8 +38,8 @@ def render_login_signup():
                     st.error("Unable to login")
                 else:
                     cookie_manager = get_cookie_manager()
-                    cookie_manager.set(cookie="access_token", val=response.session.access_token,key='at',path='/')
-                    cookie_manager.set(cookie="refresh_token", val=response.session.refresh_token,key='rt',path='/')
+                    cookie_manager.set("access_token",response.session.access_token)
+                    cookie_manager.set("refresh_token",response.session.refresh_token)
                     time.sleep(2)
                     st.success("Login successful!")
             except Exception as e:

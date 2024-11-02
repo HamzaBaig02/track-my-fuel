@@ -1,4 +1,4 @@
-from extra_streamlit_components import CookieManager
+from streamlit_cookies_controller import CookieController
 
 def get_cookie_manager():
-    return CookieManager()
+    return CookieController()
