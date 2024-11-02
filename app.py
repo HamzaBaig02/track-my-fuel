@@ -7,8 +7,9 @@ def init_session_state():
     if "supabase" not in st.session_state:
         cookie_manager = get_cookie_manager()
         access_token = cookie_manager.get("access_token")
+        time.sleep(1)
         refresh_token = cookie_manager.get("refresh_token")
-        time.sleep(2)
+        time.sleep(1)
         try:
             if access_token and refresh_token:
                 supabase = SupabaseEngine().supabase

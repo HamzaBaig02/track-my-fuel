@@ -6,6 +6,7 @@ try:
     st.session_state['supabase'].auth.sign_out()
     cookie_manager = get_cookie_manager()
     cookie_manager.set('access_token',None)
+    time.sleep(1)
     cookie_manager.set('refresh_token',None)
     time.sleep(1)
     st.subheader("You've been logged out successfully!")

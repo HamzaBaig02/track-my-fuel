@@ -40,7 +40,7 @@ def render_login_signup():
                     cookie_manager = get_cookie_manager()
                     cookie_manager.set("access_token",response.session.access_token)
                     cookie_manager.set("refresh_token",response.session.refresh_token)
-                    time.sleep(1)
+                    time.sleep(2)
                     st.success("Login successful!")
                     st.switch_page("page_functions/home.py")
             except Exception as e:
