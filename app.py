@@ -1,23 +1,34 @@
 import streamlit as st
-from supabase import create_client, Client
+from utils.api import SupabaseEngine
+from utils.cookies import get_cookie_manager
 
-class SupabaseEngine:
-    url = st.secrets['supabase']['url']
-    key = st.secrets['supabase']['key']
-    def __init__(self):
-        self.supabase: Client = create_client(self.url,self.key)
 
-if "supabase" not in st.session_state:
-     st.session_state['supabase'] = SupabaseEngine().supabase
+def init_session_state():
+    if "supabase" not in st.session_state:
+        cookie_manager = get_cookie_manager()
+        access_token = cookie_manager.get(cookie="access_token")
+        refresh_token = cookie_manager.get(cookie="refresh_token")
+        if access_token and refresh_token:
+            supabase = SupabaseEngine().supabase
+            supabase.auth.set_session(access_token, refresh_token)
+            st.session_state["supabase"] = supabase
+        else:
+            st.session_state["supabase"] = SupabaseEngine().supabase
+    if "fuel_record_list" not in st.session_state:
+        st.session_state["fuel_record_list"] = []
+    if "calculated_record_list" not in st.session_state:
+        st.session_state["calculated_record_list"] = []
 
-pg = st.navigation([
-    st.Page("page_functions/home.py", title="Home", icon="🏠"),
-    st.Page("page_functions/auth.py", title="Login/Signup", icon="🔑"),
-    st.Page("page_functions/logout.py", title="Logout", icon="🚪")
-])
+
+st.set_page_config(page_title="Fuel Tracker", page_icon="⛽")
+pg = st.navigation(
+    [
+        st.Page("page_functions/home.py", title="Home", icon="🏠"),
+        st.Page("page_functions/auth.py", title="Login/Signup", icon="🔑"),
+        st.Page("page_functions/logout.py", title="Logout", icon="🚪"),
+    ]
+)
+
+
+init_session_state()
 pg.run()
-
-
-
-
-

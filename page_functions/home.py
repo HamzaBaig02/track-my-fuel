@@ -1,8 +1,10 @@
 import streamlit as st
 from components.field_label import render_field_label
-from datetime import datetime
+from datetime import datetime as dt
 from utils.auth import protected
 from utils.validation import clean_number_input
+import pandas as pd
+from utils.fuel_calculations import *
 
 
 @protected()
@@ -15,7 +17,6 @@ def render_home(user=None):
         "Shell": ["Karim Market"],
     }
 
-    # Initialize the dictionary to collect all variables
     fuel_data = {}
 
     st.markdown(
@@ -30,9 +31,9 @@ def render_home(user=None):
     )
 
     # Date variable
-    fuel_data["date"] = datetime.now().strftime("%d-%m-%Y")
+    fuel_data["date"] = dt.now()
     st.markdown(
-        f"<p style='font-size:24px; color:gray;'>📅 Date: <span style='color:#4CAF50;'>{fuel_data['date']}</span></p>",
+        f"<p style='font-size:clamp( 18px, 1.2vw, 24px); color:gray;'>📅 Date: <span style='color:#4CAF50;'>{fuel_data['date'].strftime("%d-%m-%Y")}</span></p>",
         unsafe_allow_html=True,
     )
 
@@ -49,6 +50,7 @@ def render_home(user=None):
         st.number_input(
             "Enter mileage in kilometers (e.g., 12.5):",
             min_value=0.0,
+            placeholder=0,
             step=0.1,
             format="%.2f",
             label_visibility="collapsed",
@@ -114,15 +116,22 @@ def render_home(user=None):
     fuel_data["fuel_addition_mileage"] = clean_number_input(
         st.number_input(
             "Enter mileage when fuel was added (km per liter)",
-            min_value=0.0,
-            step=0.1,
+            min_value=0.00,
+            step=0.10,
             format="%.2f",
             label_visibility="collapsed",
         )
     )
 
-    # Display the dictionary (optional for debugging or confirmation)
-    st.write("Fuel Data:", fuel_data)
+    if st.button("Submit"):
+        st.session_state["fuel_record_list"].append(fuel_data)
+        st.session_state["calculated_record_list"].append(process_fuel_data(st.session_state["fuel_record"]))
 
+    if st.session_state.get("fuel_record", None):
+        df_record = pd.DataFrame(st.session_state["fuel_record"])
+        df_calc = pd.DataFrame(st.session_state["calculated_record"])
+
+        st.write(df_record)
+        st.write(df_calc)
 
 render_home()

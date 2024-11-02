@@ -1,5 +1,7 @@
 import streamlit as st
 from components.auth_forms import render_login_form, render_signup_form
+from utils.cookies import get_cookie_manager
+import time
 
 def render_login_signup():
     try:
@@ -31,11 +33,15 @@ def render_login_signup():
                     response = st.session_state['supabase'].auth.sign_in_with_password(
                         {"email": login_data["email"], "password": login_data["password"]}
                     )
+
                 if not response.user:
                     st.error("Unable to login")
                 else:
+                    cookie_manager = get_cookie_manager()
+                    cookie_manager.set(cookie="access_token", val=response.session.access_token,key='at',path='/')
+                    cookie_manager.set(cookie="refresh_token", val=response.session.refresh_token,key='rt',path='/')
+                    time.sleep(2)
                     st.success("Login successful!")
-                    st.switch_page("page_functions/home.py")
             except Exception as e:
                 st.error(str(e))
 
