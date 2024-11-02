@@ -125,11 +125,11 @@ def render_home(user=None):
 
     if st.button("Submit"):
         st.session_state["fuel_record_list"].append(fuel_data)
-        st.session_state["calculated_record_list"].append(process_fuel_data(st.session_state["fuel_record"]))
+        st.session_state["calculated_record_list"].append(process_fuel_data(st.session_state["fuel_record_list"]))
 
-    if st.session_state.get("fuel_record", None):
-        df_record = pd.DataFrame(st.session_state["fuel_record"])
-        df_calc = pd.DataFrame(st.session_state["calculated_record"])
+    if st.session_state.get("fuel_record_list", None):
+        df_record = pd.DataFrame(st.session_state["fuel_record_list"])
+        df_calc = pd.DataFrame(st.session_state["calculated_record_list"])
 
         st.write(df_record)
         st.write(df_calc)

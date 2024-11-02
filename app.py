@@ -9,11 +9,14 @@ def init_session_state():
         access_token = cookie_manager.get("access_token")
         refresh_token = cookie_manager.get("refresh_token")
         time.sleep(2)
-        if access_token and refresh_token:
-            supabase = SupabaseEngine().supabase
-            supabase.auth.set_session(access_token, refresh_token)
-            st.session_state["supabase"] = supabase
-        else:
+        try:
+            if access_token and refresh_token:
+                supabase = SupabaseEngine().supabase
+                supabase.auth.set_session(access_token, refresh_token)
+                st.session_state["supabase"] = supabase
+            else:
+                raise Exception("Token not found in cookies")
+        except:
             st.session_state["supabase"] = SupabaseEngine().supabase
     if "fuel_record_list" not in st.session_state:
         st.session_state["fuel_record_list"] = []
