@@ -13,7 +13,10 @@ def init_session_state():
         try:
             if access_token and refresh_token:
                 supabase = SupabaseEngine().supabase
-                supabase.auth.set_session(access_token, refresh_token)
+                response = supabase.auth.set_session(access_token, refresh_token)
+                cookie_manager.set("refresh_token",response.session.refresh_token)
+                cookie_manager.set("access_token",response.session.access_token)
+                time.sleep(2)
                 st.session_state["supabase"] = supabase
             else:
                 raise Exception("Token not found in cookies")
