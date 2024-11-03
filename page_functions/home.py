@@ -30,10 +30,8 @@ def render_home(user=None):
         unsafe_allow_html=True,
     )
 
-    # Date variable
-    fuel_data["date"] = dt.now()
     st.markdown(
-        f"<p style='font-size:clamp( 18px, 1.2vw, 24px); color:gray;'>📅 Date: <span style='color:#4CAF50;'>{fuel_data['date'].strftime("%d-%m-%Y")}</span></p>",
+        f"<p style='font-size:clamp( 18px, 1.2vw, 24px); color:gray;'>📅 Date: <span style='color:#4CAF50;'>{dt.now().strftime("%d-%m-%Y")}</span></p>",
         unsafe_allow_html=True,
     )
 
@@ -44,6 +42,10 @@ def render_home(user=None):
         unsafe_allow_html=True,
     )
 
+    #date
+
+    render_field_label(text="📅 Date")
+    fuel_data["date"] = st.date_input("When's your birthday", dt.now(),label_visibility="collapsed",format="DD/MM/YYYY")
     # day start mileage
     render_field_label(text="🚗 Day Start Mileage")
     fuel_data["day_start_mileage"] = clean_number_input(
