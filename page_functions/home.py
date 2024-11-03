@@ -31,22 +31,12 @@ def render_home(user=None):
     )
 
     st.markdown(
-        f"<p style='font-size:clamp( 18px, 1.2vw, 24px); color:gray;'>📅 Date: <span style='color:#4CAF50;'>{dt.now().strftime("%d-%m-%Y")}</span></p>",
+        f"<p style='font-size:clamp( 18px, 1.2vw, 24px); color:gray;'>📅 Today's Date: <span style='color:#4CAF50;'>{dt.now().strftime("%d-%m-%Y")}</span></p>",
         unsafe_allow_html=True,
     )
 
     # Divider and Section Header
     st.divider()
-    st.markdown(
-        "<h2 style='font-size:clamp(22px,1.7vw,35px);'>Fuel Record</h2>",
-        unsafe_allow_html=True,
-    )
-
-    #date
-
-    render_field_label(text="📅 Date")
-    fuel_data["date"] = st.date_input("When's your birthday", dt.now(),label_visibility="collapsed",format="DD/MM/YYYY")
-    # day start mileage
     render_field_label(text="🚗 Day Start Mileage")
     fuel_data["day_start_mileage"] = clean_number_input(
         st.number_input(
@@ -58,6 +48,15 @@ def render_home(user=None):
             label_visibility="collapsed",
         )
     )
+    st.divider()
+    st.markdown(
+        "<h2 style='font-size:clamp(22px,1.7vw,35px);'>Fuel Record</h2>",
+        unsafe_allow_html=True,
+    )
+
+    #date
+    render_field_label(text="📅 Fueling Date")
+    fuel_data["date"] = st.date_input("When's your birthday", dt.now(),label_visibility="collapsed",format="DD/MM/YYYY")
 
     # Fuel Added
     render_field_label(text="⛽ Fuel Added")

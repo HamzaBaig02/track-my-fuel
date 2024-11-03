@@ -1,5 +1,6 @@
 import streamlit as st
 
+#decorator
 def protected(redirect_page="page_functions/auth.py"):
     def decorator(func):
         def wrapper(*args, **kwargs):

@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.api import SupabaseEngine
+from api.client import SupabaseEngine
 from utils.cookies import get_cookie_manager
 import time
 
