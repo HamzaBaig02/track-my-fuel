@@ -74,8 +74,8 @@ def render_home(user=None):
     with day_start_mileage_col3:
         if st.button("Submit",key="button2"):
             try:
-                create_daily_fuel_mileage_record(day_start_mileage_data)
-                st.session_state["day_start_mileage_list"].append(day_start_mileage_data)
+                day_start_mileage_response = create_daily_fuel_mileage_record(day_start_mileage_data)
+                st.session_state["day_start_mileage_list"].append(day_start_mileage_response )
                 st.toast('Record Submitted', icon='🎉')
             except SupabaseAPIError as e:
                 st.error(str(e))
@@ -162,14 +162,17 @@ def render_home(user=None):
 
     if st.button("Submit"):
         try:
-            st.session_state["fuel_record_list"].append(fuel_data)
-            processed_fuel_data = process_fuel_data(st.session_state["fuel_record_list"])
-            st.session_state["calculated_record_list"].append(processed_fuel_data)
-            create_fuel_and_calculation(fuel_record=fuel_data,fuel_calculation_record=processed_fuel_data)
+            fuel_record_list_temp = st.session_state["fuel_record_list"].copy()
+            fuel_record_list_temp.append(fuel_data)
+            processed_fuel_data = process_fuel_data(fuel_record_list_temp)
+
+            fuel_record,fuel_calculation_record = create_fuel_and_calculation(fuel_record=fuel_data,fuel_calculation_record=processed_fuel_data)
+
+            st.session_state["fuel_record_list"].append(fuel_record)  #updating state with the record obtained from api response
+            st.session_state["calculated_record_list"].append(fuel_calculation_record) #updating state with the record obtained from api response
+
             st.toast('Record Submitted', icon='🎉')
         except SupabaseAPIError as e:
-            st.session_state["fuel_record_list"].pop()
-            st.session_state["calculated_record_list"].pop()
             st.error(e)
 
 
