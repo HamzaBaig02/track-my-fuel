@@ -133,10 +133,10 @@ def process_fuel_data(fuel_record_list):
     calculated_record["fuel_litres"] = calc_fuel_litres(fuel_added=0 if index == 0 else fuel_record_list[index - 1]["fuel_added"],fuel_rate=0 if index == 0 else fuel_record_list[index - 1]["fuel_rate"],)
     calculated_record["distance_on_reserve"] = calc_distance_reserve(
         fuel_addition_mileage=(
-            0 if index == 0 else fuel_record_list[index - 1]["fuel_addition_mileage"]
+            fuel_record_list[index]["fuel_addition_mileage"]
         ),
         reserve_switch_mileage=(
-            0 if index == 0 else fuel_record_list[index - 1]["reserve_switch_mileage"]
+            fuel_record_list[index]["reserve_switch_mileage"]
         ),
     )
     calculated_record["fuel_litres_adjusted"] = calc_fuel_litres_adjusted(

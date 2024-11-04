@@ -32,3 +32,46 @@ def get_all_daily_fuel_mileage_records():
     except SupabaseAPIError as e:
         logger.error(f"API Failure: Could not fetch daily fuel mileage records. Error: {e}")
         return None
+
+
+def delete_daily_fuel_mileage_record(id):
+    """
+    Deletes a daily fuel mileage record by ID.
+    """
+    try:
+        logger.info(f"Attempting to delete daily fuel mileage record with ID: {id}.")
+        response = supabase.table("daily_fuel_mileage").delete().eq("id", id).execute()
+
+        if response.data:
+            logger.info("API Success: Daily fuel mileage record deleted successfully.")
+            return {"status": "success", "message": "Record deleted successfully"}
+        else:
+            logger.warning("API Warning: Record not found for deletion.")
+            return {"status": "error", "message": "Record not found"}
+    except SupabaseAPIError as e:
+        logger.error(f"API Failure: Could not delete daily fuel mileage record. Error: {e}")
+        raise
+
+
+def update_daily_fuel_mileage_record(id, update_data):
+    """
+    Updates a daily fuel mileage record by ID with the provided update_data dictionary.
+    """
+    try:
+        logger.info(f"Attempting to update daily fuel mileage record with ID: {id}.")
+        response = (
+            supabase.table("daily_fuel_mileage")
+            .update(update_data)
+            .eq("id", id)
+            .execute()
+        )
+
+        if response.data:
+            logger.info("API Success: Daily fuel mileage record updated successfully.")
+            return response.data[0]
+        else:
+            logger.warning("API Warning: Record not found for update.")
+            return {"status": "error", "message": "Record not found"}
+    except SupabaseAPIError as e:
+        logger.error(f"API Failure: Could not update daily fuel mileage record. Error: {e}")
+        raise

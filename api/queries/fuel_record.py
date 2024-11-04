@@ -35,3 +35,46 @@ def get_all_fuel_records():
     except SupabaseAPIError as e:
         logger.error(f"API Failure: Could not fetch fuel records. Error: {e}")
         return None
+
+
+def delete_fuel_record(id):
+    """
+    Deletes a fuel record by ID.
+    """
+    try:
+        logger.info(f"Attempting to delete fuel record with ID: {id}.")
+        response = supabase.table("fuel_record").delete().eq("id", id).execute()
+
+        if response.data:
+            logger.info("API Success: Fuel record deleted successfully.")
+            return {"status": "success", "message": "Record deleted successfully"}
+        else:
+            logger.warning("API Warning: Record not found for deletion.")
+            return {"status": "error", "message": "Record not found"}
+    except SupabaseAPIError as e:
+        logger.error(f"API Failure: Could not delete fuel record. Error: {e}")
+        raise
+
+
+def update_fuel_record(id, update_data):
+    """
+    Updates a fuel record by ID with the provided update_data dictionary.
+    """
+    try:
+        logger.info(f"Attempting to update fuel record with ID: {id}.")
+        response = (
+            supabase.table("fuel_record")
+            .update(update_data)
+            .eq("id", id)
+            .execute()
+        )
+
+        if response.data:
+            logger.info("API Success: Fuel record updated successfully.")
+            return response.data[0]
+        else:
+            logger.warning("API Warning: Record not found for update.")
+            return {"status": "error", "message": "Record not found"}
+    except SupabaseAPIError as e:
+        logger.error(f"API Failure: Could not update fuel record. Error: {e}")
+        raise
