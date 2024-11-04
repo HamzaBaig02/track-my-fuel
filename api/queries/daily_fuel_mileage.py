@@ -13,8 +13,12 @@ def create_daily_fuel_mileage_record(daily_fuel_mileage_record):
             .insert(daily_fuel_mileage_record)
             .execute()
         )
+        filtered_response = [
+            {k: v for k, v in record.items() if k in ["id","date","day_start_mileage"]}
+            for record in response.data
+        ]
         logger.info("API Success: Daily fuel mileage record created successfully.")
-        return response.data[0]
+        return filtered_response[0]
     except SupabaseAPIError as e:
         logger.error(f"API Failure: Could not create daily fuel mileage record. Error: {e}")
         raise
@@ -22,7 +26,7 @@ def create_daily_fuel_mileage_record(daily_fuel_mileage_record):
 def get_all_daily_fuel_mileage_records():
     try:
         logger.info("Fetching all daily fuel mileage records.")
-        response = supabase.table("daily_fuel_mileage").select("*").execute()
+        response = supabase.table("daily_fuel_mileage").select("id,date,day_start_mileage").execute()
         logger.info("API Success: Daily fuel mileage records fetched successfully.")
         return response.data
     except SupabaseAPIError as e:

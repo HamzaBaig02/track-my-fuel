@@ -14,9 +14,12 @@ def create_fuel_record(fuel_record):
             .insert(fuel_record)
             .execute()
         )
-
+        filtered_response = [
+            {k: v for k, v in record.items() if k in ["id","fueling_date","fuel_added","fuel_rate","reserve_switch_mileage","fuel_addition_mileage","fueling_station_name","fueling_station_location"]}
+            for record in response.data
+        ]
         logger.info("API Success: Fuel record created successfully.")
-        return response.data[0]
+        return filtered_response[0]
     except SupabaseAPIError as e:
         logger.error(f"API Failure: Could not create fuel record. Error: {e}")
         raise
@@ -25,7 +28,7 @@ def get_all_fuel_records():
     try:
         logger.info("Fetching all fuel records.")
 
-        response = supabase.table("fuel_record").select("*").execute()
+        response = supabase.table("fuel_record").select("id,fueling_date,fuel_added,fuel_rate,reserve_switch_mileage,fuel_addition_mileage,fueling_station_name,fueling_station_location").execute()
 
         logger.info("API Success: Fuel records fetched successfully.")
         return response.data

@@ -15,9 +15,13 @@ def create_fuel_calculation_record(fuel_calculation_record, fuel_record_id):
             .insert(fuel_calculation_record)
             .execute()
         )
+        filtered_response = [
+            {k: v for k, v in record.items() if k in ["id","fuel_litres","distance_on_reserve","fuel_litres_adjusted","fuel_average","upcoming_fueling","fuel_days","travel_avg","distance_fuel_adjusted","fuel_record_id"]}
+            for record in response.data
+        ]
 
         logger.info("API Success: Fuel calculation record created successfully.")
-        return response.data
+        return filtered_response[0]
     except SupabaseAPIError as e:
         logger.error(f"API Failure: Could not create fuel calculation record. Error: {e}")
         raise
@@ -26,7 +30,7 @@ def get_all_fuel_calculation_records():
     try:
         logger.info("Fetching all fuel calculation records.")
 
-        response = supabase.table("fuel_calculation").select("*").execute()
+        response = supabase.table("fuel_calculation").select("id,fuel_litres,distance_on_reserve,fuel_litres_adjusted,fuel_average,upcoming_fueling,fuel_days,travel_avg,distance_fuel_adjusted,fuel_record_id").execute()
 
         logger.info("API Success: Fuel calculation records fetched successfully.")
         return response.data
