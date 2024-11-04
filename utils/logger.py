@@ -1,14 +1,15 @@
 import logging
 
-
 logger = logging.getLogger("console_logger")
-logger.setLevel(logging.DEBUG)
 
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.DEBUG)
+# Check if handlers are already set up to avoid duplicate logs
+if not logger.hasHandlers():
+    logger.setLevel(logging.DEBUG)
 
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-console_handler.setFormatter(formatter)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
 
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    console_handler.setFormatter(formatter)
 
-logger.addHandler(console_handler)
+    logger.addHandler(console_handler)
