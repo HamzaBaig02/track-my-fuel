@@ -179,7 +179,18 @@ def render_home(user=None):
         df_record = pd.DataFrame(st.session_state["fuel_record_list"])
         df_calc = pd.DataFrame(st.session_state["calculated_record_list"])
 
+        st.divider()
+        st.markdown(
+        "<h2 style='font-size:clamp(22px,1.7vw,35px);'>Fuel Records</h2>",
+        unsafe_allow_html=True,
+        )
         st.write(df_record)
+
+        st.divider()
+        st.markdown(
+        "<h2 style='font-size:clamp(22px,1.7vw,35px);'>Fuel Calculation Records</h2>",
+        unsafe_allow_html=True,
+        )
         st.write(df_calc)
 
 
