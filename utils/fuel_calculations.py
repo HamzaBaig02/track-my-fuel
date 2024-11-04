@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 def calc_fuel_litres(fuel_added: float, fuel_rate: float) -> float:
     """
@@ -109,18 +109,21 @@ def calc_travel_avg(distance_fuel_adjusted: float, fuel_days_lasted: int) -> flo
         return 0
 
 
-def calc_fuel_days_lasted(date_current_row: datetime.datetime, date_previous_row: datetime.datetime) -> int:
+def calc_fuel_days_lasted(date_current_row: str, date_previous_row: str) -> int:
     """
-    Calculate the number of days that fuel has lasted based on two dates.
+    Calculate the number of days that fuel has lasted based on two dates in string format.
 
     Parameters:
-    date_current_row (datetime.datetime): The current date of the record.
-    date_previous_row (datetime.datetime): The previous date of the record. From row above
+    date_current_row (str): The current date of the record, in "YYYY-MM-DD" format.
+    date_previous_row (str): The previous date of the record, in "YYYY-MM-DD" format.
 
     Returns:
     int: The number of days between the two dates.
     """
-    difference = date_current_row - date_previous_row
+    date_current = datetime.strptime(date_current_row, "%Y-%m-%d")
+    date_previous = datetime.strptime(date_previous_row, "%Y-%m-%d")
+
+    difference = date_current - date_previous
     return difference.days
 
 
@@ -156,9 +159,9 @@ def process_fuel_data(fuel_record_list):
         fuel_avg=calculated_record["fuel_average"],
     )
     calculated_record["fuel_days"] = calc_fuel_days_lasted(
-        date_current_row=fuel_record_list[index]["date"],
+        date_current_row=fuel_record_list[index]["fueling_date"],
         date_previous_row=(
-            fuel_record_list[index]["date"] if index == 0 else fuel_record_list[index - 1]["date"]
+            fuel_record_list[index]["fueling_date"] if index == 0 else fuel_record_list[index - 1]["fueling_date"]
         ),
     )
     calculated_record["travel_avg"] = calc_travel_avg(
