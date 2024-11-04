@@ -26,9 +26,6 @@ def get_all_fuel_records():
     try:
         logger.info("Fetching all fuel records.")
         response = st.session_state["supabase"].auth.get_user()
-        logger.info(f"Current User from fuel records: {response.user}.")
-        import pdb;pdb.set_trace()
-
         response = st.session_state["supabase"].table("fuel_record").select("id,fueling_date,fuel_added,fuel_rate,reserve_switch_mileage,fuel_addition_mileage,fueling_station_name,fueling_station_location").execute()
 
         logger.info("API Success: Fuel records fetched successfully.")

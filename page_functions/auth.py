@@ -1,7 +1,6 @@
 import streamlit as st
 from components.auth_forms import render_login_form, render_signup_form
-from utils.cookies import get_cookie_manager
-import time
+
 
 def render_login_signup():
     try:
@@ -37,10 +36,6 @@ def render_login_signup():
                 if not response.user:
                     st.error("Unable to login")
                 else:
-                    cookie_manager = get_cookie_manager()
-                    cookie_manager.set("access_token",response.session.access_token)
-                    cookie_manager.set("refresh_token",response.session.refresh_token)
-                    time.sleep(2)
                     st.success("Login successful!")
                     st.switch_page("page_functions/home.py")
             except Exception as e:
