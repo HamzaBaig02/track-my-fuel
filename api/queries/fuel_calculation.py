@@ -1,9 +1,8 @@
 import streamlit as st
-from supabase import Client
 from api.exceptions import *
 from utils.logger import logger
 
-supabase: Client = st.session_state["supabase"]
+
 
 def create_fuel_calculation_record(fuel_calculation_record, fuel_record_id):
     try:
@@ -11,7 +10,7 @@ def create_fuel_calculation_record(fuel_calculation_record, fuel_record_id):
         logger.info("Attempting to create a fuel calculation record.")
 
         response = (
-            supabase.table("fuel_calculation")
+            st.session_state["supabase"].table("fuel_calculation")
             .insert(fuel_calculation_record)
             .execute()
         )
@@ -30,7 +29,7 @@ def get_all_fuel_calculation_records():
     try:
         logger.info("Fetching all fuel calculation records.")
 
-        response = supabase.table("fuel_calculation").select("id,fuel_litres,distance_on_reserve,fuel_litres_adjusted,fuel_average,upcoming_fueling,fuel_days,travel_avg,distance_fuel_adjusted,fuel_record_id").execute()
+        response = st.session_state["supabase"].table("fuel_calculation").select("id,fuel_litres,distance_on_reserve,fuel_litres_adjusted,fuel_average,upcoming_fueling,fuel_days,travel_avg,distance_fuel_adjusted,fuel_record_id").execute()
 
         logger.info("API Success: Fuel calculation records fetched successfully.")
         return response.data

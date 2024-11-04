@@ -1,9 +1,7 @@
 import streamlit as st
-from supabase import Client
 from api.exceptions import *
 from utils.logger import logger
 
-supabase: Client = st.session_state["supabase"]
 
 def create_fuel_and_calculation(fuel_record, fuel_calculation_record):
     """
@@ -13,7 +11,7 @@ def create_fuel_and_calculation(fuel_record, fuel_calculation_record):
     try:
         logger.info("Attempting to execute create_fuel_and_calculation SQL function.")
 
-        response = supabase.rpc(
+        response = st.session_state["supabase"].rpc(
             "create_fuel_and_calculation",
             {
                 "fuel_record": fuel_record,

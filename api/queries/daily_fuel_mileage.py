@@ -1,15 +1,14 @@
 import streamlit as st
-from supabase import Client
 from api.exceptions import *
 from utils.logger import logger
 
-supabase: Client = st.session_state["supabase"]
+
 
 def create_daily_fuel_mileage_record(daily_fuel_mileage_record):
     try:
         logger.info("Attempting to create a daily fuel mileage record.")
         response = (
-            supabase.table("daily_fuel_mileage")
+            st.session_state["supabase"].table("daily_fuel_mileage")
             .insert(daily_fuel_mileage_record)
             .execute()
         )
@@ -26,7 +25,7 @@ def create_daily_fuel_mileage_record(daily_fuel_mileage_record):
 def get_all_daily_fuel_mileage_records():
     try:
         logger.info("Fetching all daily fuel mileage records.")
-        response = supabase.table("daily_fuel_mileage").select("id,date,day_start_mileage").execute()
+        response = st.session_state["supabase"].table("daily_fuel_mileage").select("id,date,day_start_mileage").execute()
         logger.info("API Success: Daily fuel mileage records fetched successfully.")
         return response.data
     except SupabaseAPIError as e:
@@ -40,7 +39,7 @@ def delete_daily_fuel_mileage_record(id):
     """
     try:
         logger.info(f"Attempting to delete daily fuel mileage record with ID: {id}.")
-        response = supabase.table("daily_fuel_mileage").delete().eq("id", id).execute()
+        response = st.session_state["supabase"].table("daily_fuel_mileage").delete().eq("id", id).execute()
 
         if response.data:
             logger.info("API Success: Daily fuel mileage record deleted successfully.")
@@ -60,7 +59,7 @@ def update_daily_fuel_mileage_record(id, update_data):
     try:
         logger.info(f"Attempting to update daily fuel mileage record with ID: {id}.")
         response = (
-            supabase.table("daily_fuel_mileage")
+            st.session_state["supabase"].table("daily_fuel_mileage")
             .update(update_data)
             .eq("id", id)
             .execute()
