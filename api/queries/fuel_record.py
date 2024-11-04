@@ -1,16 +1,14 @@
 import streamlit as st
-from supabase import Client
 from api.exceptions import *
 from utils.logger import logger
 
-supabase: Client = st.session_state["supabase"]
 
 def create_fuel_record(fuel_record):
     try:
         logger.info("Attempting to create a fuel record.")
 
         response = (
-            supabase.table("fuel_record")
+            st.session_state["supabase"].table("fuel_record")
             .insert(fuel_record)
             .execute()
         )
@@ -27,8 +25,11 @@ def create_fuel_record(fuel_record):
 def get_all_fuel_records():
     try:
         logger.info("Fetching all fuel records.")
+        response = st.session_state["supabase"].auth.get_user()
+        logger.info(f"Current User from fuel records: {response.user}.")
+        import pdb;pdb.set_trace()
 
-        response = supabase.table("fuel_record").select("id,fueling_date,fuel_added,fuel_rate,reserve_switch_mileage,fuel_addition_mileage,fueling_station_name,fueling_station_location").execute()
+        response = st.session_state["supabase"].table("fuel_record").select("id,fueling_date,fuel_added,fuel_rate,reserve_switch_mileage,fuel_addition_mileage,fueling_station_name,fueling_station_location").execute()
 
         logger.info("API Success: Fuel records fetched successfully.")
         return response.data
@@ -43,7 +44,7 @@ def delete_fuel_record(id):
     """
     try:
         logger.info(f"Attempting to delete fuel record with ID: {id}.")
-        response = supabase.table("fuel_record").delete().eq("id", id).execute()
+        response = st.session_state["supabase"].table("fuel_record").delete().eq("id", id).execute()
 
         if response.data:
             logger.info("API Success: Fuel record deleted successfully.")
@@ -63,7 +64,7 @@ def update_fuel_record(id, update_data):
     try:
         logger.info(f"Attempting to update fuel record with ID: {id}.")
         response = (
-            supabase.table("fuel_record")
+            st.session_state["supabase"].table("fuel_record")
             .update(update_data)
             .eq("id", id)
             .execute()

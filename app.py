@@ -12,9 +12,8 @@ def init_session_state():
 
         try:
             access_token = cookie_manager.get("access_token")
-            time.sleep(1)
             refresh_token = cookie_manager.get("refresh_token")
-            time.sleep(1)
+            time.sleep(2)
 
             if access_token and refresh_token:
                 logger.info("Access and refresh tokens found. Attempting to set session.")
@@ -23,9 +22,8 @@ def init_session_state():
                 response = supabase.auth.set_session(access_token, refresh_token)
 
                 cookie_manager.set("refresh_token", response.session.refresh_token)
-                time.sleep(1)
                 cookie_manager.set("access_token", response.session.access_token)
-                time.sleep(1)
+                time.sleep(2)
 
                 logger.info("Login successful, authentication cookies set.")
 
