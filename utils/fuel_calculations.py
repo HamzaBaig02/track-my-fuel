@@ -127,8 +127,9 @@ def calc_fuel_days_lasted(date_current_row: str, date_previous_row: str) -> int:
     return difference.days
 
 
-def process_fuel_data(fuel_record_list):
-    index = len(fuel_record_list) - 1
+def process_fuel_data(fuel_record_list,index=None):
+    if not index:
+        index = len(fuel_record_list) - 1
     calculated_record = {}
     calculated_record["fuel_litres"] = calc_fuel_litres(fuel_added=0 if index == 0 else fuel_record_list[index - 1]["fuel_added"],fuel_rate=0 if index == 0 else fuel_record_list[index - 1]["fuel_rate"],)
     calculated_record["distance_on_reserve"] = calc_distance_reserve(
