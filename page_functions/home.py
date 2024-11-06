@@ -78,7 +78,7 @@ def render_home(user=None):
                 st.error(str(e))
 
     if st.session_state["day_start_mileage_list"]:
-        st.write(pd.DataFrame(st.session_state["day_start_mileage_list"]))
+        st.dataframe(pd.DataFrame(st.session_state["day_start_mileage_list"]))
 
     # Divider
     st.divider()
@@ -111,14 +111,14 @@ def render_home(user=None):
             "<h2 style='font-size:clamp(22px,1.7vw,35px);'>Fuel Records</h2>",
             unsafe_allow_html=True,
         )
-        st.write(df_record)
+        st.dataframe(df_record)
 
         st.divider()
         st.markdown(
             "<h2 style='font-size:clamp(22px,1.7vw,35px);'>Fuel Calculation Records</h2>",
             unsafe_allow_html=True,
         )
-        st.write(df_calc)
+        st.dataframe(df_calc)
 
 
 render_home()
