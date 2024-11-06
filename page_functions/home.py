@@ -15,7 +15,7 @@ from api.queries.daily_fuel_mileage_table import *
 from utils.misc import refresh
 
 @protected()
-def render_home(user=None):
+def render_home():
     def init_page_session_state():
         if "fuel_record_list" not in st.session_state:
             st.session_state["fuel_record_list"] = get_all_fuel_records()
