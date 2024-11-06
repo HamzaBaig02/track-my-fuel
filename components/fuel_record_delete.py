@@ -3,6 +3,8 @@ from components.field_label import render_field_label
 from datetime import datetime as dt
 from components.constants import LOCATIONS
 from api.queries.fuel_record_table import get_fuel_record_by_id, delete_fuel_record
+from utils.misc import refresh
+
 
 def render_delete_fuel_record_form():
     record_id = st.text_input("Enter Record ID to Delete", "")
@@ -114,6 +116,7 @@ def render_delete_fuel_record_form():
                 st.success("Record deleted successfully!")
                 st.session_state["fuel_record_to_delete"] = None
                 submit_toast.toast('Record Deleted!', icon='🗑️')
+                refresh()
                 st.rerun()
             except Exception as e:
                 st.error(f"Failed to delete record: {e}")

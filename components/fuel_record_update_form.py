@@ -3,7 +3,11 @@ from components.field_label import render_field_label
 from utils.validation import clean_number_input
 from datetime import datetime as dt
 from components.constants import LOCATIONS
-from api.queries.fuel_record_table import get_fuel_record_by_id, update_fuel_record
+from api.queries.fuel_record_table import get_fuel_record_by_id, update_fuel_record,get_fuel_record_and_previous_by_id
+from api.queries.fuel_calculation_table import update_fuel_calculation_record_by_form_id
+from utils.fuel_calculations import process_fuel_data
+from utils.misc import refresh
+
 
 def render_update_fuel_record_form():
     record_id = st.text_input("Enter Record ID", "")
@@ -114,12 +118,16 @@ def render_update_fuel_record_form():
 
         if st.button("Update Record"):
             try:
-                submit_toast = st.toast('Updating...', icon='⌛')
-                update_fuel_record(record_id, fuel_data)
-                st.success("Record updated successfully!")
-
+                submit_toast = st.toast('Updating fuel record', icon='⌛')
+                fuel_record = update_fuel_record(record_id, fuel_data)
+                fuel_record_list = get_fuel_record_and_previous_by_id(fuel_record['id'])
+                calculated_fuel_record = process_fuel_data(fuel_record_list)
+                submit_toast.toast('Processing fuel record', icon='⌛')
+                update_fuel_calculation_record_by_form_id(fuel_record['id'],calculated_fuel_record)
+                submit_toast.toast('Updating fuel record calculations...', icon='⌛')
                 st.session_state["fuel_record_to_update"] = None
                 submit_toast.toast('Record Updated!', icon='🎉')
+                refresh()
                 st.rerun()
             except Exception as e:
                 st.error(f"Failed to update record: {e}")

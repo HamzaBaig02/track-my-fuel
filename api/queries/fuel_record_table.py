@@ -46,7 +46,7 @@ def get_all_fuel_records():
             .table("fuel_record")
             .select(
                 "id,fueling_date,fuel_added,fuel_rate,reserve_switch_mileage,fuel_addition_mileage,fueling_station_name,fueling_station_location"
-            )   
+            )
             .order(
                 "fueling_date", desc=False
             )
@@ -85,6 +85,42 @@ def get_fuel_record_by_id(id):
     except Exception as e:
         logger.error(f"API Failure: Could not fetch fuel record. Error: {e}")
         raise SupabaseAPIError(f"Failed to fetch fuel record by ID: {e}")
+
+
+def get_fuel_record_and_previous_by_id(id):
+    try:
+        current_record = get_fuel_record_by_id(id)
+
+        if not current_record:
+            logger.warning("API Warning: Record not found.")
+            return None
+
+        fueling_date = current_record["fueling_date"]
+
+        previous_record_response = (
+            st.session_state["supabase"]
+            .table("fuel_record")
+            .select(
+                "id,fueling_date,fuel_added,fuel_rate,reserve_switch_mileage,"
+                "fuel_addition_mileage,fueling_station_name,fueling_station_location"
+            )
+            .lt("fueling_date", fueling_date)
+            .order("fueling_date", desc=True)
+            .limit(1)
+            .execute()
+        )
+
+        previous_record = previous_record_response.data[0] if previous_record_response.data else None
+
+        logger.info("API Success: Fuel record and previous record fetched successfully.")
+        if previous_record:
+            return [previous_record,current_record]
+        else:
+            return [current_record]
+
+    except Exception as e:
+        logger.error(f"API Failure: Could not fetch fuel records. Error: {e}")
+        raise SupabaseAPIError(f"Failed to fetch fuel records by ID: {e}")
 
 
 def delete_fuel_record(id):

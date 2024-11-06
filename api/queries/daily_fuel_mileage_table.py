@@ -3,7 +3,6 @@ from api.exceptions import *
 from utils.logger import logger
 
 
-
 def create_daily_fuel_mileage_record(daily_fuel_mileage_record):
     try:
         logger.info("Attempting to create a daily fuel mileage record.")
@@ -22,14 +21,23 @@ def create_daily_fuel_mileage_record(daily_fuel_mileage_record):
         logger.error(f"API Failure: Could not create daily fuel mileage record. Error: {e}")
         raise
 
+
 def get_all_daily_fuel_mileage_records():
     try:
         logger.info("Fetching all daily fuel mileage records.")
-        response = st.session_state["supabase"].table("daily_fuel_mileage").select("id,date,day_start_mileage").execute()
+        response = (
+            st.session_state["supabase"]
+            .table("daily_fuel_mileage")
+            .select("id,date,day_start_mileage")
+            .order("date", desc=False)
+            .execute()
+        )
         logger.info("API Success: Daily fuel mileage records fetched successfully.")
         return response.data
     except SupabaseAPIError as e:
-        logger.error(f"API Failure: Could not fetch daily fuel mileage records. Error: {e}")
+        logger.error(
+            f"API Failure: Could not fetch daily fuel mileage records. Error: {e}"
+        )
         return None
 
 

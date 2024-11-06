@@ -2,7 +2,6 @@ import streamlit as st
 from api.exceptions import *
 from utils.logger import logger
 
-
 def create_fuel_calculation_record(fuel_calculation_record, fuel_record_id):
     try:
         fuel_calculation_record["fuel_record_id"] = fuel_record_id
@@ -63,3 +62,31 @@ def get_all_fuel_calculation_records():
         return response.data
     except SupabaseAPIError as e:
         logger.error(f"API Failure: Could not fetch fuel calculation records")
+
+
+
+def update_fuel_calculation_record_by_form_id(form_id, data):
+    try:
+        logger.info(f"Attempting to update fuel calculation record with ID: {id}")
+
+        response = (
+            st.session_state["supabase"]
+            .table("fuel_calculation")
+            .update(data)
+            .eq("fuel_record_id", form_id)
+            .execute()
+        )
+
+        if response.data:
+            updated_record = response.data[0]
+            logger.info("API Success: Fuel calculation record updated successfully.")
+            return updated_record
+        else:
+            logger.warning("API Warning: No records were updated.")
+            return None
+
+    except SupabaseAPIError as e:
+        logger.error(f"API Failure: Could not update fuel calculation record. Error: {e}")
+        raise
+
+
