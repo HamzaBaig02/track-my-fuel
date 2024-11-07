@@ -31,9 +31,10 @@ def render_home():
     fuel_calculation = {}
 
     st.markdown(
-        "<h1 style='font-size:clamp(24px,2vw,40px);'>Track My Fuel 😩💦</h1>",
-        unsafe_allow_html=True,
-    )
+    "<h1 style='font-size:clamp(24px,2vw,40px);text-align:center;'>⛽ Track My Fuel 😩💧</h1>",
+    unsafe_allow_html=True,
+)
+
 
     st.markdown(
         """<p style='color:gray; font-size:20px;'>Welcome to the <b>Ultimate Fuel Tracker 🚗💨 </b>! This app helps you keep an eye on all things fuel-related!

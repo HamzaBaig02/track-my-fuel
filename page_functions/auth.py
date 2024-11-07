@@ -3,6 +3,11 @@ from components.auth_forms import render_login_form, render_signup_form
 
 
 def render_login_signup():
+    st.markdown(
+    "<h1 style='font-size:clamp(24px,2vw,40px);text-align:center;'>⛽ Track My Fuel 😩💧</h1>",
+    unsafe_allow_html=True,
+)
+
     try:
         response = st.session_state['supabase'].auth.get_user()
         if response:
@@ -20,6 +25,7 @@ def render_login_signup():
                         {"email": registration_data["email"], "password": registration_data["password"]}
                     )
                 if response:
+                    st.info(response)
                     st.success("Verification email sent!")
             except Exception as e:
                 st.error(str(e))
