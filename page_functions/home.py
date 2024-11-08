@@ -50,7 +50,7 @@ def render_home():
             with loading_placeholder.container():
                 st.markdown(
                     """
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
         <div style="text-align: center;">
             <p style="font-size: 28px; color: #4CAF50; font-weight: bold; margin-bottom: 20px;">
                 ⛽ Loading data for <span style="color: #FFA726;">Track My Fuel</span>...
