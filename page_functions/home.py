@@ -4,6 +4,7 @@ from components.fuel_record_form import render_fuel_record_form
 from components.fuel_record_update_form import render_update_fuel_record_form
 from components.fuel_record_delete import render_delete_fuel_record_form
 from datetime import datetime as dt
+import pytz
 from utils.auth import protected
 from utils.validation import clean_number_input
 import pandas as pd
@@ -25,6 +26,20 @@ def render_home():
             st.session_state["day_start_mileage_list"] = get_all_daily_fuel_mileage_records()
 
     init_page_session_state()
+
+    def arqum_birthday():
+        if "balloons_shown" not in st.session_state:
+            st.session_state.balloons_shown = False
+        pakistan_tz = pytz.timezone("Asia/Karachi")
+        current_time_in_pakistan = datetime.now(pakistan_tz)
+        if current_time_in_pakistan.month == 12 and current_time_in_pakistan.day == 2:
+            if not st.session_state.balloons_shown:
+                st.balloons()
+                st.session_state.balloons_shown = True
+        else:
+            logger.info(f"Today is {current_time_in_pakistan.strftime('%B %d')}, not Arqum's birthday.")
+
+    arqum_birthday()
 
     day_start_mileage_data = {}
     fuel_record = {}
