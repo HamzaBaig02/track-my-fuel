@@ -10,7 +10,7 @@ from utils.misc import refresh
 
 
 def render_update_fuel_record_form():
-    record_id = st.text_input("Enter Record ID", "")
+    record_id = st.text_input("Enter Record ID to Update", "")
 
     if st.button("Fetch Record") and record_id:
         submit_toast = st.toast('Fetching Record...', icon='⌛')
