@@ -171,3 +171,32 @@ def update_fuel_record(id, update_data):
     except Exception as e:
         logger.error(f"API Failure: Could not update fuel record. Error: {e}")
         raise SupabaseAPIError(f"Failed to update fuel record: {e}")
+
+
+
+def get_locations():
+    """
+    Fetches distinct fueling stations and their respective locations.
+    """
+    try:
+        logger.info("Fetching distinct fueling stations and locations.")
+
+        response = (
+            st.session_state["supabase"]
+            .rpc("get_distinct_fueling_stations_and_locations")
+            .execute()
+        )
+
+        if response.data:
+            logger.info("API Success: Distinct fueling stations and locations fetched successfully.")
+            formatted_locations = {
+            record["fueling_station_name"]: record["locations"]
+            for record in response.data
+        }
+            return formatted_locations
+        else:
+            logger.warning("API Warning: No fueling stations or locations found.")
+            return {}
+    except Exception as e:
+        logger.error(f"API Failure: Could not fetch fueling stations and locations. Error: {e}")
+        raise SupabaseAPIError(f"Failed to fetch fueling stations and locations: {e}")

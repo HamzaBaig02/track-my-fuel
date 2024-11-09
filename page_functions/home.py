@@ -17,23 +17,32 @@ from utils.misc import refresh
 
 
 def arqum_birthday():
-    if "balloons_shown" not in st.session_state:
-        st.session_state.balloons_shown = False
-    pakistan_tz = pytz.timezone("Asia/Karachi")
-    current_time_in_pakistan = datetime.now(pakistan_tz)
-    if current_time_in_pakistan.month == 12 and current_time_in_pakistan.day == 2:
-        if not st.session_state.balloons_shown:
-            st.balloons()
-            st.session_state.balloons_shown = True
-    else:
-        logger.info(f"Today is {current_time_in_pakistan.strftime('%B %d')}, not Arqum's birthday.")
+    if "arqum_birthday_checked" not in st.session_state:
+        st.session_state.arqum_birthday_checked = False
+
+    if not st.session_state.arqum_birthday_checked:
+        if "balloons_shown" not in st.session_state:
+            st.session_state.balloons_shown = False
+
+        pakistan_tz = pytz.timezone("Asia/Karachi")
+        current_time_in_pakistan = datetime.now(pakistan_tz)
+
+        if current_time_in_pakistan.month == 12 and current_time_in_pakistan.day == 2:
+            if not st.session_state.balloons_shown:
+                st.balloons()
+                st.balloons()
+                st.balloons()
+                st.session_state.balloons_shown = True
+        else:
+            logger.info(f"Today is {current_time_in_pakistan.strftime('%B %d')}, not Arqum's birthday.")
+
+        st.session_state.arqum_birthday_checked = True
+
 
 
 @protected()
 def render_home():
-
     def init_page_session_state():
-        import time
 
         if "fuel_record_list" not in st.session_state:
             st.session_state["fuel_record_list"] = []
@@ -41,6 +50,8 @@ def render_home():
             st.session_state["calculated_record_list"] = []
         if "day_start_mileage_list" not in st.session_state:
             st.session_state["day_start_mileage_list"] = []
+        if "locations" not in st.session_state:
+            st.session_state['locations'] = {'':[]}
         if "data_loaded" not in st.session_state:
             st.session_state["data_loaded"] = False
 
@@ -50,32 +61,32 @@ def render_home():
             with loading_placeholder.container():
                 st.markdown(
                     """
-    <div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
-        <div style="text-align: center;">
-            <p style="font-size: 28px; color: #4CAF50; font-weight: bold; margin-bottom: 20px;">
-                ⛽ Loading data for <span style="color: #FFA726;">Track My Fuel</span>...
-            </p>
-            <div class="loader" style="font-size: 50px; margin: 0 auto;">🏍️</div>
-            <p style="font-size: 16px; color: #9e9e9e; margin-top: 20px;">
-                🚗 Fetching your latest fuel records... Hang tight! ⏳
-            </p>
-        </div>
-    </div>
-    <style>
-    .loader {
-        display: inline-block;
-        position: relative;
-        animation: ride 4s ease-in-out infinite;
-    }
-    @keyframes ride {
-        0% { transform: translateX(100px) scaleX(1); }   /* Start from right, facing left */
-        45% { transform: translateX(-100px) scaleX(1); } /* Move to left without flipping */
-        50% { transform: translateX(-100px) scaleX(-1); } /* Pause at left, flip to face right */
-        95% { transform: translateX(100px) scaleX(-1); } /* Move back to right without flipping */
-        100% { transform: translateX(100px) scaleX(1); } /* Pause at right, flip to face left */
-    }
-    </style>
-    """,
+                        <div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
+                            <div style="text-align: center;">
+                                <p style="font-size: 28px; color: #4CAF50; font-weight: bold; margin-bottom: 20px;">
+                                    ⛽ Loading data for <span style="color: #FFA726;">Track My Fuel</span>...
+                                </p>
+                                <div class="loader" style="font-size: 50px; margin: 0 auto;">🏍️</div>
+                                <p style="font-size: 16px; color: #9e9e9e; margin-top: 20px;">
+                                    🚗 Fetching your latest fuel records... Hang tight! ⏳
+                                </p>
+                            </div>
+                        </div>
+                        <style>
+                        .loader {
+                            display: inline-block;
+                            position: relative;
+                            animation: ride 4s ease-in-out infinite;
+                        }
+                        @keyframes ride {
+                            0% { transform: translateX(100px) scaleX(1); }   /* Start from right, facing left */
+                            45% { transform: translateX(-100px) scaleX(1); } /* Move to left without flipping */
+                            50% { transform: translateX(-100px) scaleX(-1); } /* Pause at left, flip to face right */
+                            95% { transform: translateX(100px) scaleX(-1); } /* Move back to right without flipping */
+                            100% { transform: translateX(100px) scaleX(1); } /* Pause at right, flip to face left */
+                        }
+                        </style>
+                    """,
                     unsafe_allow_html=True,
                 )
                 st.session_state["fuel_record_list"] = get_all_fuel_records()
@@ -85,8 +96,10 @@ def render_home():
                 st.session_state["day_start_mileage_list"] = (
                     get_all_daily_fuel_mileage_records()
                 )
+                st.session_state['locations'] = get_locations()
                 st.session_state["data_loaded"] = True
                 st.rerun()
+
 
     init_page_session_state()
 

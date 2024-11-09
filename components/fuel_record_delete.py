@@ -1,7 +1,6 @@
 import streamlit as st
 from components.field_label import render_field_label
 from datetime import datetime as dt
-from components.constants import LOCATIONS
 from api.queries.fuel_record_table import get_fuel_record_by_id, delete_fuel_record
 from utils.misc import refresh
 
@@ -66,8 +65,8 @@ def render_delete_fuel_record_form():
             render_field_label(text="🏢 Fueling Station Name")
             st.selectbox(
                 "Fueling station name",
-                list(LOCATIONS.keys()),
-                index=list(LOCATIONS.keys()).index(fuel_data["fueling_station_name"]),
+                list(st.session_state['locations'].keys() if st.session_state['locations'] else []),
+                index=list(st.session_state['locations'].keys() if st.session_state['locations'] else []).index(fuel_data["fueling_station_name"]),
                 label_visibility="collapsed",
                 key="delete_fueling_station_name_input",
                 disabled=True
@@ -76,8 +75,8 @@ def render_delete_fuel_record_form():
             render_field_label(text="📍 Fueling Station Location")
             st.selectbox(
                 "Fueling station location",
-                LOCATIONS[fuel_data["fueling_station_name"]],
-                index=LOCATIONS[fuel_data["fueling_station_name"]].index(fuel_data["fueling_station_location"]),
+                st.session_state['locations'][fuel_data["fueling_station_name"]],
+                index=st.session_state['locations'][fuel_data["fueling_station_name"]].index(fuel_data["fueling_station_location"]),
                 label_visibility="collapsed",
                 key="delete_fueling_station_location_input",
                 disabled=True

@@ -7,7 +7,6 @@ from api.queries.fuel_calculation_table import *
 from api.queries.fuel_record_table import *
 from api.queries.sql_functions import *
 from api.queries.daily_fuel_mileage_table import *
-from components.constants import LOCATIONS
 
 
 def render_fuel_record_form():
@@ -27,6 +26,7 @@ def render_fuel_record_form():
             step=0.1,
             format="%.2f",
             label_visibility="collapsed",
+
         )
     )
 
@@ -44,20 +44,33 @@ def render_fuel_record_form():
 
     # Fueling Station Information
     fueling_station_info_col1, fueling_station_info_col2 = st.columns(2)
+
     with fueling_station_info_col1:
         render_field_label(text="🏢 Fueling Station Name")
+        station_names = list(st.session_state['locations'].keys() if st.session_state['locations'] else []) + ["Add Custom"]
         fuel_data["fueling_station_name"] = st.selectbox(
             "Enter fueling station name",
-            list(LOCATIONS.keys()),
+            station_names,
             label_visibility="collapsed",
         )
+
+        # If "Add Custom" is selected, show an input field for the custom name
+        if fuel_data["fueling_station_name"] == "Add Custom":
+            fuel_data["fueling_station_name"] = st.text_input("Enter custom station name",label_visibility="collapsed",placeholder="Name")
+
     with fueling_station_info_col2:
         render_field_label(text="📍 Fueling Station Location")
-        fuel_data["fueling_station_location"] = st.selectbox(
-            "Enter fueling station location",
-            LOCATIONS[fuel_data["fueling_station_name"]],
-            label_visibility="collapsed",
-        )
+
+        # Display location options or a custom input based on selected name
+        if fuel_data["fueling_station_name"] in st.session_state['locations']:
+            fuel_data["fueling_station_location"] = st.selectbox(
+                "Enter fueling station location",
+                st.session_state['locations'][fuel_data["fueling_station_name"]],
+                label_visibility="collapsed",
+            )
+        else:
+            fuel_data["fueling_station_location"] = st.text_input("Enter custom location",label_visibility="collapsed",placeholder="Location")
+
 
     # Reserve Switch Mileage
     render_field_label(text="🔄 Reserve Switch Mileage")

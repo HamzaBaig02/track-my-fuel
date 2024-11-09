@@ -2,7 +2,6 @@ import streamlit as st
 from components.field_label import render_field_label
 from utils.validation import clean_number_input
 from datetime import datetime as dt
-from components.constants import LOCATIONS
 from api.queries.fuel_record_table import get_fuel_record_by_id, update_fuel_record,get_fuel_record_and_previous_by_id
 from api.queries.fuel_calculation_table import update_fuel_calculation_record_by_form_id
 from utils.fuel_calculations import process_fuel_data
@@ -70,23 +69,35 @@ def render_update_fuel_record_form():
         fueling_station_info_col1, fueling_station_info_col2 = st.columns(2)
 
         with fueling_station_info_col1:
+            station_name_index = list(st.session_state['locations'].keys() if st.session_state['locations'] else [] ).index(st.session_state["fuel_record_to_update"]["fueling_station_name"])
             render_field_label(text="🏢 Fueling Station Name")
             fuel_data["fueling_station_name"] = st.selectbox(
                 "Enter fueling station name",
-                list(LOCATIONS.keys()),
+                list(st.session_state['locations'].keys() if st.session_state['locations'] else []) + ["Add Custom"],
                 label_visibility="collapsed",
-                index=list(LOCATIONS.keys()).index(st.session_state["fuel_record_to_update"]["fueling_station_name"]),
+                index=station_name_index,
                 key="fueling_station_name_input"
             )
+
+            if fuel_data["fueling_station_name"] == "Add Custom":
+                fuel_data["fueling_station_name"] = st.text_input("Enter custom station name",label_visibility="collapsed",placeholder="Name")
+
         with fueling_station_info_col2:
+            station_locations_index = st.session_state['locations'][st.session_state["fuel_record_to_update"]["fueling_station_name"]].index(st.session_state["fuel_record_to_update"]["fueling_station_location"])
             render_field_label(text="📍 Fueling Station Location")
-            fuel_data["fueling_station_location"] = st.selectbox(
-                "Enter fueling station location",
-                LOCATIONS[fuel_data["fueling_station_name"]],
-                label_visibility="collapsed",
-                index=LOCATIONS[st.session_state["fuel_record_to_update"]["fueling_station_name"]].index(st.session_state["fuel_record_to_update"]["fueling_station_location"]),
-                key="fueling_station_location_input"
-            )
+            if fuel_data["fueling_station_name"] in st.session_state['locations']:
+                fuel_data["fueling_station_location"] = st.selectbox(
+                    "Enter fueling station location",
+                    st.session_state['locations'][fuel_data["fueling_station_name"]],
+                    label_visibility="collapsed",
+                    index=station_locations_index if station_locations_index < len(st.session_state['locations'][fuel_data["fueling_station_name"]]) else 0,
+                    key="fueling_station_location_input"
+                )
+            else:
+                fuel_data["fueling_station_location"] = st.text_input("Enter custom location",label_visibility="collapsed",placeholder="Location")
+
+
+
 
         # Reserve Switch Mileage
         render_field_label(text="🔄 Reserve Switch Mileage")

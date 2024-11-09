@@ -10,6 +10,7 @@ def refresh():
             st.session_state["fuel_record_list"] = get_all_fuel_records()
             st.session_state["calculated_record_list"] = get_all_fuel_calculation_records()
             st.session_state["day_start_mileage_list"] = get_all_daily_fuel_mileage_records()
+            st.session_state['locations'] = get_locations()
             refresh_toast.toast('Tables refreshed!', icon='🎉')
         except:
               st.toast('Failed to refresh one or more tables', icon='⚠️')
