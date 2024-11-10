@@ -114,6 +114,7 @@ def render_fuel_record_form():
                     fuel_calculation_record=processed_fuel_data
                 )
                 refresh()
+                st.rerun()
 
                 submit_toast.toast('Record Submitted', icon='🎉')
         except SupabaseAPIError as e:

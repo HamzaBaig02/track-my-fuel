@@ -172,10 +172,6 @@ def render_home():
     elif fuel__record_form_choice == "Delete ❌":
         fuel_record_deleted = render_delete_fuel_record_form()
 
-    # Append data to session state after submission
-    if fuel_record and fuel_calculation:
-        st.session_state["fuel_record_list"].append(fuel_record)
-        st.session_state["calculated_record_list"].append(fuel_calculation)
 
     # Display Fuel and Calculation Records
     if st.session_state.get("fuel_record_list", None):
