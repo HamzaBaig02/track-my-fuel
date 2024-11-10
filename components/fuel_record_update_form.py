@@ -88,7 +88,7 @@ def render_update_fuel_record_form():
             if fuel_data["fueling_station_name"] in st.session_state['locations']:
                 fuel_data["fueling_station_location"] = st.selectbox(
                     "Enter fueling station location",
-                    st.session_state['locations'][fuel_data["fueling_station_name"]],
+                    list(st.session_state['locations'][fuel_data["fueling_station_name"]] + ['Add Custom']),
                     label_visibility="collapsed",
                     index=station_locations_index if station_locations_index < len(st.session_state['locations'][fuel_data["fueling_station_name"]]) else 0,
                     key="fueling_station_location_input"
@@ -96,7 +96,8 @@ def render_update_fuel_record_form():
             else:
                 fuel_data["fueling_station_location"] = st.text_input("Enter custom location",label_visibility="collapsed",placeholder="Location")
 
-
+            if fuel_data["fueling_station_location"] == 'Add Custom':
+                fuel_data["fueling_station_location"] = st.text_input("Enter custom location",label_visibility="collapsed",placeholder="Location")
 
 
         # Reserve Switch Mileage
