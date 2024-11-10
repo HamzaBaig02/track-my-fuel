@@ -7,6 +7,7 @@ from api.queries.fuel_calculation_table import *
 from api.queries.fuel_record_table import *
 from api.queries.sql_functions import *
 from api.queries.daily_fuel_mileage_table import *
+from utils.misc import refresh
 
 
 def render_fuel_record_form():
@@ -112,6 +113,7 @@ def render_fuel_record_form():
                     fuel_record=fuel_data,
                     fuel_calculation_record=processed_fuel_data
                 )
+                refresh()
 
                 submit_toast.toast('Record Submitted', icon='🎉')
         except SupabaseAPIError as e:
