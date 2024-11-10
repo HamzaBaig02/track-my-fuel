@@ -50,6 +50,7 @@ def get_all_fuel_records():
             .order(
                 "fueling_date", desc=False
             )
+            .order("created_at", desc=False)
             .execute()
         )
 
@@ -106,6 +107,7 @@ def get_fuel_record_and_previous_by_id(id):
             )
             .lt("fueling_date", fueling_date)
             .order("fueling_date", desc=True)
+            .order("created_at", desc=True)
             .limit(1)
             .execute()
         )

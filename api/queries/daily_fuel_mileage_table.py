@@ -30,6 +30,7 @@ def get_all_daily_fuel_mileage_records():
             .table("daily_fuel_mileage")
             .select("id,date,day_start_mileage")
             .order("date", desc=False)
+            .order("created_at", desc=False)
             .execute()
         )
         logger.info("API Success: Daily fuel mileage records fetched successfully.")
