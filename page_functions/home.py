@@ -138,6 +138,7 @@ def render_home():
                 placeholder=0,
                 step=0.1,
                 format="%.2f",
+                value=st.session_state["day_start_mileage_list"][-1]['day_start_mileage'],
                 label_visibility="collapsed",
             )
         )
@@ -191,6 +192,10 @@ def render_home():
             unsafe_allow_html=True,
         )
         st.dataframe(df_calc)
+
+        df_calc_for_graph = pd.DataFrame(st.session_state["calculated_record_list"][1:])
+        df_calc_for_graph.set_index('fueling_date', inplace=True)
+        st.line_chart(df_calc_for_graph[['fuel_average']],x_label="Date",y_label="Fuel Average")
 
 
 render_home()
