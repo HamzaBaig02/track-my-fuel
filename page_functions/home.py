@@ -14,7 +14,7 @@ from api.queries.fuel_record_table import *
 from api.queries.sql_functions import *
 from api.queries.daily_fuel_mileage_table import *
 from utils.misc import refresh
-
+import plotly.express as px
 
 def arqum_birthday():
     if "arqum_birthday_checked" not in st.session_state:
@@ -138,7 +138,7 @@ def render_home():
                 placeholder=0,
                 step=0.1,
                 format="%.2f",
-                value=st.session_state["day_start_mileage_list"][-1]['day_start_mileage'],
+                value=st.session_state["day_start_mileage_list"][-1]['day_start_mileage'] if len(st.session_state["day_start_mileage_list"])>0 else 0.00,
                 label_visibility="collapsed",
             )
         )
@@ -196,6 +196,9 @@ def render_home():
         df_calc_for_graph = pd.DataFrame(st.session_state["calculated_record_list"][1:])
         df_calc_for_graph.set_index('fueling_date', inplace=True)
         st.line_chart(df_calc_for_graph[['fuel_average']],x_label="Date",y_label="Fuel Average")
+
+
+
 
 
 render_home()
