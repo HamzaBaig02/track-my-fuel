@@ -14,7 +14,6 @@ from api.queries.fuel_record_table import *
 from api.queries.sql_functions import *
 from api.queries.daily_fuel_mileage_table import *
 from utils.misc import refresh
-import plotly.express as px
 
 def arqum_birthday():
     if "arqum_birthday_checked" not in st.session_state:
