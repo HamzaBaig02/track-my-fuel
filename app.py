@@ -10,8 +10,8 @@ def init_session_state():
 st.set_page_config(page_title="Fuel Tracker", page_icon="⛽")
 pg = st.navigation(
     [
+        st.Page("page_functions/auth.py", title="Login/Signup", icon="🔑", default=True),
         st.Page("page_functions/home.py", title="Home", icon="🏠"),
-        st.Page("page_functions/auth.py", title="Login/Signup", icon="🔑"),
         st.Page("page_functions/logout.py", title="Logout", icon="🚪"),
     ]
 )
