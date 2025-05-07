@@ -155,12 +155,7 @@ def render_home():
                 st.error(str(e))
 
     if st.session_state["day_start_mileage_list"]:
-       sorted_data = sorted(
-        st.session_state["day_start_mileage_list"],
-        key=lambda x: x["date"],
-        reverse=True,
-       )
-       st.dataframe(pd.DataFrame(sorted_data))  # Ensure this is indented under the if statement
+       st.dataframe(pd.DataFrame(st.session_state["day_start_mileage_list"]))
 
 
     # Divider

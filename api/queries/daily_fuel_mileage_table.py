@@ -29,8 +29,7 @@ def get_all_daily_fuel_mileage_records():
             st.session_state["supabase"]
             .table("daily_fuel_mileage")
             .select("id,date,day_start_mileage")
-            .order("date", desc=False)
-            .order("created_at", desc=False)
+            .order("date", desc=True)
             .execute()
         )
         logger.info("API Success: Daily fuel mileage records fetched successfully.")
