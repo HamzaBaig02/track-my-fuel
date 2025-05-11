@@ -24,7 +24,7 @@ def arqum_birthday():
             st.session_state.balloons_shown = False
 
         pakistan_tz = pytz.timezone("Asia/Karachi")
-        current_time_in_pakistan = datetime.now(pakistan_tz)
+        current_time_in_pakistan = dt.now(pakistan_tz)
 
         if current_time_in_pakistan.month == 12 and current_time_in_pakistan.day == 2:
             if not st.session_state.balloons_shown:
@@ -37,12 +37,9 @@ def arqum_birthday():
 
         st.session_state.arqum_birthday_checked = True
 
-
-
 @protected()
 def render_home():
     def init_page_session_state():
-
         if "fuel_record_list" not in st.session_state:
             st.session_state["fuel_record_list"] = []
         if "calculated_record_list" not in st.session_state:
@@ -56,49 +53,43 @@ def render_home():
 
         if not st.session_state["data_loaded"]:
             loading_placeholder = st.empty()
-
             with loading_placeholder.container():
                 st.markdown(
                     """
-                        <div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
-                            <div style="text-align: center;">
-                                <p style="font-size: 28px; color: #4CAF50; font-weight: bold; margin-bottom: 20px;">
-                                    ⛽ Loading data for <span style="color: #FFA726;">Track My Fuel</span>...
-                                </p>
-                                <div class="loader" style="font-size: 50px; margin: 0 auto;">🏍️</div>
-                                <p style="font-size: 16px; color: #9e9e9e; margin-top: 20px;">
-                                    🚗 Fetching your latest fuel records... Hang tight! ⏳
-                                </p>
-                            </div>
+                    <div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
+                        <div style="text-align: center;">
+                            <p style="font-size: 28px; color: #4CAF50; font-weight: bold; margin-bottom: 20px;">
+                                ⛽ Loading data for <span style="color: #FFA726;">Track My Fuel</span>...
+                            </p>
+                            <div class="loader" style="font-size: 50px; margin: 0 auto;">🏍️</div>
+                            <p style="font-size: 16px; color: #9e9e9e; margin-top: 20px;">
+                                🚗 Fetching your latest fuel records... Hang tight! ⏳
+                            </p>
                         </div>
-                        <style>
-                        .loader {
-                            display: inline-block;
-                            position: relative;
-                            animation: ride 4s ease-in-out infinite;
-                        }
-                        @keyframes ride {
-                            0% { transform: translateX(100px) scaleX(1); }   /* Start from right, facing left */
-                            45% { transform: translateX(-100px) scaleX(1); } /* Move to left without flipping */
-                            50% { transform: translateX(-100px) scaleX(-1); } /* Pause at left, flip to face right */
-                            95% { transform: translateX(100px) scaleX(-1); } /* Move back to right without flipping */
-                            100% { transform: translateX(100px) scaleX(1); } /* Pause at right, flip to face left */
-                        }
-                        </style>
+                    </div>
+                    <style>
+                    .loader {
+                        display: inline-block;
+                        position: relative;
+                        animation: ride 4s ease-in-out infinite;
+                    }
+                    @keyframes ride {
+                        0% { transform: translateX(100px) scaleX(1); }
+                        45% { transform: translateX(-100px) scaleX(1); }
+                        50% { transform: translateX(-100px) scaleX(-1); }
+                        95% { transform: translateX(100px) scaleX(-1); }
+                        100% { transform: translateX(100px) scaleX(1); }
+                    }
+                    </style>
                     """,
                     unsafe_allow_html=True,
                 )
                 st.session_state["fuel_record_list"] = get_all_fuel_records()
-                st.session_state["calculated_record_list"] = (
-                    get_all_fuel_calculation_records()
-                )
-                st.session_state["day_start_mileage_list"] = (
-                    get_all_daily_fuel_mileage_records()
-                )
+                st.session_state["calculated_record_list"] = get_all_fuel_calculation_records()
+                st.session_state["day_start_mileage_list"] = get_all_daily_fuel_mileage_records()
                 st.session_state['locations'] = get_locations()
                 st.session_state["data_loaded"] = True
                 st.rerun()
-
 
     init_page_session_state()
 
@@ -107,9 +98,9 @@ def render_home():
     fuel_calculation = {}
 
     st.markdown(
-    "<h1 style='font-size:clamp(24px,2vw,40px);text-align:center;'>⛽ Track My Fuel 😩💧</h1>",
-    unsafe_allow_html=True,
-)
+        "<h1 style='font-size:clamp(24px,2vw,40px);text-align:center;'>⛽ Track My Fuel 😩💧</h1>",
+        unsafe_allow_html=True,
+    )
 
     st.markdown(
         """<p style='color:gray; font-size:20px;'>Welcome to the <b>Ultimate Fuel Tracker 🚗💨 </b>! This app helps you keep an eye on all things fuel-related!
@@ -153,38 +144,91 @@ def render_home():
                 daily_fuel_submit_toast.toast('Record Submitted', icon='🎉')
             except SupabaseAPIError as e:
                 st.error(str(e))
- 
-    if st.session_state["day_start_mileage_list"]:
-       df_mileage = pd.DataFrame(st.session_state["day_start_mileage_list"])
 
-       # Convert to datetime
-       df_mileage['date'] = pd.to_datetime(df_mileage['date'])
+    if "day_start_mileage_list" not in st.session_state or not st.session_state["day_start_mileage_list"]:
+        st.session_state["day_start_mileage_list"] = []
+    df_mileage = pd.DataFrame(st.session_state["day_start_mileage_list"])
 
-       # Sort ascending for correct distance calculation
-       df_mileage.sort_values(by='date', ascending=True, inplace=True)
+    # Convert to datetime
+    df_mileage['date'] = pd.to_datetime(df_mileage['date'])
 
-       # Calculate distance: next day's mileage - today's mileage
-       mileage_values = df_mileage['day_start_mileage'].astype(float)
-       df_mileage['Distance Travelled (KM)'] = mileage_values.shift(-1) - mileage_values
+    # Sort ascending for correct distance calculation
+    df_mileage.sort_values(by='date', ascending=True, inplace=True)
 
-       # Re-sort descending for display
-       df_mileage.sort_values(by='date', ascending=False, inplace=True)
+    # Calculate distance: next day's mileage - today's mileage
+    mileage_values = df_mileage['day_start_mileage'].astype(float)
+    df_mileage['Distance Travelled (KM)'] = mileage_values.shift(-1) - mileage_values
 
-       # Format date and numbers
-       df_mileage['date'] = df_mileage['date'].dt.strftime('%Y-%m-%d')
-       df_mileage['day_start_mileage'] = df_mileage['day_start_mileage'].apply(lambda x: f"{x:,.0f}")
-       df_mileage['Distance Travelled (KM)'] = df_mileage['Distance Travelled (KM)'].apply(
-           lambda x: f"{x:,.0f}" if pd.notnull(x) else ""
-       )
+    # Re-sort descending for display
+    df_mileage.sort_values(by='date', ascending=False, inplace=True)
 
-       # Use pandas Styler for dynamic width (still somewhat limited)
-       styled_df = df_mileage.style.set_properties(**{
-           'text-align': 'left',  # Align text to the left for better readability
-       })
+    # Reset index to ensure first row is index 0
+    df_mileage = df_mileage.reset_index(drop=True)
 
-       # Display the styled dataframe with responsive container width
-       st.dataframe(styled_df, use_container_width=True)
+    # Format date and numbers
+    df_mileage['date'] = df_mileage['date'].dt.strftime('%Y-%m-%d')
+    df_mileage['day_start_mileage'] = df_mileage['day_start_mileage'].apply(lambda x: f"{x:,.0f}")
+    df_mileage['Distance Travelled (KM)'] = df_mileage.apply(
+        lambda row: "(Pending)" if row.name == 0 and pd.isnull(row['Distance Travelled (KM)']) else f"{row['Distance Travelled (KM)']:,.0f}" if pd.notnull(row['Distance Travelled (KM)']) else "",
+        axis=1
+    )
 
+    # Define style function for gray "(Pending)"
+    def style_pending(val):
+        return 'color: #808080' if val == '(Pending)' else 'color: black'
+
+    # Use pandas Styler for centered text and gray "(Pending)" with inline styling
+    styled_df = df_mileage.style.set_properties(**{
+        'text-align': 'center !important',  # Force center alignment on data
+        'display': 'inline-block',  # Ensure inline behavior
+    }).applymap(style_pending, subset=['Distance Travelled (KM)']).set_table_styles(
+        [{'selector': 'th',
+          'props': [('text-align', 'center !important')]},
+         {'selector': 'td',
+          'props': [('text-align', 'center !important')]}]
+    )
+
+    # Apply custom CSS with maximum specificity to override Streamlit defaults
+    st.markdown(
+        """
+        <style>
+        .stDataFrame [data-testid="stTable"] thead th {
+            text-align: center !important;
+            min-width: auto !important;
+            max-width: fit-content !important;
+            padding: 4px !important;
+            white-space: nowrap !important;
+        }
+        .stDataFrame [data-testid="stTable"] tbody td {
+            text-align: center !important;
+            min-width: auto !important;
+            max-width: fit-content !important;
+            padding: 4px !important;
+            white-space: nowrap !important;
+        }
+        .stDataFrame [data-testid="stTable"] thead th:nth-child(1),
+        .stDataFrame [data-testid="stTable"] tbody td:nth-child(1) {
+            min-width: 30px !important; max-width: 50px !important;  /* id */
+        }
+        .stDataFrame [data-testid="stTable"] thead th:nth-child(2),
+        .stDataFrame [data-testid="stTable"] tbody td:nth-child(2) {
+            min-width: 70px !important; max-width: 90px !important;  /* date */
+        }
+        .stDataFrame [data-testid="stTable"] thead th:nth-child(3),
+        .stDataFrame [data-testid="stTable"] tbody td:nth-child(3) {
+            min-width: 90px !important; max-width: 110px !important;  /* day_start_mileage */
+        }
+        .stDataFrame [data-testid="stTable"] thead th:nth-child(4),
+        .stDataFrame [data-testid="stTable"] tbody td:nth-child(4) {
+            min-width: 100px !important; max-width: 120px !important;  /* Distance Travelled (KM) */
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Display the styled dataframe with responsive container width, hiding index
+    st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
     # Divider
     st.divider()
@@ -200,7 +244,6 @@ def render_home():
         fuel_record_updated = render_update_fuel_record_form()
     elif fuel__record_form_choice == "Delete ❌":
         fuel_record_deleted = render_delete_fuel_record_form()
-
 
     # Display Fuel and Calculation Records
     if st.session_state.get("fuel_record_list", None):
@@ -224,10 +267,6 @@ def render_home():
         df_calc_for_graph = pd.DataFrame(st.session_state["calculated_record_list"][1:])
         df_calc_for_graph.set_index('fueling_date', inplace=True)
         st.line_chart(df_calc_for_graph[['fuel_average']],x_label="Date",y_label="Fuel Average")
-
-
-
-
 
 render_home()
 arqum_birthday()
