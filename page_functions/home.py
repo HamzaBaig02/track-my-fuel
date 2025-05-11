@@ -137,7 +137,7 @@ def render_home():
                 placeholder=0,
                 step=0.1,
                 format="%.2f",
-                value=st.session_state["day_start_mileage_list"][-1]['day_start_mileage'] if len(st.session_state["day_start_mileage_list"])>0 else 0.00,
+                value=st.session_state["day_start_mileage_list"][0]['day_start_mileage'] if len(st.session_state["day_start_mileage_list"])>0 else 0.00,
                 label_visibility="collapsed",
             )
         )
@@ -153,9 +153,37 @@ def render_home():
                 daily_fuel_submit_toast.toast('Record Submitted', icon='🎉')
             except SupabaseAPIError as e:
                 st.error(str(e))
-
+ 
     if st.session_state["day_start_mileage_list"]:
-       st.dataframe(pd.DataFrame(st.session_state["day_start_mileage_list"]))
+       df_mileage = pd.DataFrame(st.session_state["day_start_mileage_list"])
+
+       # Convert to datetime
+       df_mileage['date'] = pd.to_datetime(df_mileage['date'])
+
+       # Sort ascending for correct distance calculation
+       df_mileage.sort_values(by='date', ascending=True, inplace=True)
+
+       # Calculate distance: next day's mileage - today's mileage
+       mileage_values = df_mileage['day_start_mileage'].astype(float)
+       df_mileage['Distance Travelled (KM)'] = mileage_values.shift(-1) - mileage_values
+
+       # Re-sort descending for display
+       df_mileage.sort_values(by='date', ascending=False, inplace=True)
+
+       # Format date and numbers
+       df_mileage['date'] = df_mileage['date'].dt.strftime('%Y-%m-%d')
+       df_mileage['day_start_mileage'] = df_mileage['day_start_mileage'].apply(lambda x: f"{x:,.0f}")
+       df_mileage['Distance Travelled (KM)'] = df_mileage['Distance Travelled (KM)'].apply(
+           lambda x: f"{x:,.0f}" if pd.notnull(x) else ""
+       )
+
+       # Use pandas Styler for dynamic width (still somewhat limited)
+       styled_df = df_mileage.style.set_properties(**{
+           'text-align': 'left',  # Align text to the left for better readability
+       })
+
+       # Display the styled dataframe with responsive container width
+       st.dataframe(styled_df, use_container_width=True)
 
 
     # Divider
